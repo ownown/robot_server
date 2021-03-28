@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "robot_interfaces/msg/sensors.hpp"
 
 #include "BrickPi3/BrickPi3.h"
 
@@ -18,7 +18,7 @@ private:
     sensor_ultrasonic_t sensor_4;
 
     rclcpp::TimerBase::SharedPtr timer;
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher;
+    rclcpp::Publisher<robot_interfaces::msg::Sensors>::SharedPtr publisher;
 
     void timer_callback();
 public:

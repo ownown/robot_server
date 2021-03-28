@@ -1,4 +1,4 @@
-#include "robot_rpi/sensors.h"
+#include "robot/sensors.h"
 
 #include <chrono>
 #include <functional>
@@ -7,7 +7,9 @@
 #include <unistd.h> // usleep
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "robot_interfaces/msg/sensors.hpp"
+
+#include "BrickPi3/BrickPi3.h"
 
 using namespace std::chrono_literals;
 
@@ -17,13 +19,14 @@ void SensorPublisher::timer_callback()
     this->bp->get_sensor(PORT_2, &(this->sensor_2));
     this->bp->get_sensor(PORT_3, &(this->sensor_3));
     this->bp->get_sensor(PORT_4, &(this->sensor_4));
-    auto message = std_msgs::msg::String();
-    message.data = "Sensor data :: 1: " + std::to_string(this->sensor_1.cm) +
-        "cm 2: " + std::to_string(this->sensor_2.cm) + "cm 3: " +
-        std::to_string(this->sensor_3.cm) + "cm 3: " +
-        std::to_string(this->sensor_3.cm) + "cm 4: " +
-        std::to_string(this->sensor_4.cm);
-    RCLCPP_INFO(this->get_logger(), "%s", message.data.c_str());
+    auto message = robot_interfaces::msg::Sensors();
+    message.sensor1 = this->sensor_1.cm;
+    message.sensor2 = this->sensor_2.cm;
+    message.sensor3 = this->sensor_3.cm;
+    message.sensor4 = this->sensor_4.cm;
+
+    RCLCPP_INFO(this->get_logger(), "Sensor 1: %.2fcm\tSensor 2: %.2fcm\tSensor 3: %.2fcm\tSensor 4: %.2fcm",
+        message.sensor1, message.sensor2, message.sensor3, message.sensor4);
     this->publisher->publish(message);
 }
 
@@ -31,7 +34,7 @@ SensorPublisher::SensorPublisher(std::shared_ptr<BrickPi3> bp)
     : Node("Sensors"), bp(bp)
 {
     RCLCPP_INFO(this->get_logger(), "SensorPublisher constructor");
-    this->publisher = this->create_publisher<std_msgs::msg::String>("sensors", 10);
+    this->publisher = this->create_publisher<robot_interfaces::msg::Sensors>("sensors", 10);
     this->timer = this->create_wall_timer(
         20ms, std::bind(&SensorPublisher::timer_callback, this));
     

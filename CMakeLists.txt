@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(robot_rpi)
+project(robot)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -19,36 +19,34 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(robot_interfaces REQUIRED)
 
 add_library(BrickPi3 STATIC src/BrickPi3.cpp src/bp_spi.cpp)
 target_include_directories(BrickPi3 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-add_executable(controls src/controls.cpp src/sensors.cpp)
+# Build the RPI controller
+add_executable(controls src/controls_main.cpp src/sensors.cpp)
 target_include_directories(controls PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
+# Build the processor
+add_executable(processing src/processing_main.cpp src/processing.cpp)
+target_include_directories(processing PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+
 target_link_libraries(controls BrickPi3)
-ament_target_dependencies(controls rclcpp std_msgs)
+ament_target_dependencies(controls rclcpp robot_interfaces)
+ament_target_dependencies(processing rclcpp robot_interfaces)
 
 
-install(TARGETS controls
+install(TARGETS 
+  controls
+  processing
   DESTINATION lib/${PROJECT_NAME})
-
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # uncomment the line when a copyright and license is not present in all source files
-  #set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # uncomment the line when this package is not in a git repo
-  #set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
 
 ament_package()

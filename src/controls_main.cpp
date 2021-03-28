@@ -4,7 +4,7 @@
 #include "rclcpp/rclcpp.hpp"
 
 #include "BrickPi3/BrickPi3.h"
-#include "robot_rpi/sensors.h"
+#include "robot/sensors.h"
 
 int main(int argc, char **argv)
 {
