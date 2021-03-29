@@ -18,8 +18,11 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(robot_interfaces REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+
+set(srv_files "srv/RobotControl.srv")
+
+rosidl_generate_interfaces(${PROJECT_NAME} ${msg_files} ${srv_files})
 
 add_library(BrickPi3 STATIC src/BrickPi3.cpp src/bp_spi.cpp)
 target_include_directories(BrickPi3 PUBLIC
@@ -27,26 +30,34 @@ target_include_directories(BrickPi3 PUBLIC
   $<INSTALL_INTERFACE:include>)
 
 # Build the RPI controller
-add_executable(controls src/controls_main.cpp src/sensors.cpp)
+add_executable(controls src/controls_main.cpp)
 target_include_directories(controls PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
 # Build the processor
-add_executable(processing src/processing_main.cpp src/processing.cpp)
-target_include_directories(processing PUBLIC
+# add_executable(processing src/processing_main.cpp src/processing.cpp)
+# target_include_directories(processing PUBLIC
+#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#   $<INSTALL_INTERFACE:include>)
+
+add_executable(server src/server.cpp)
+target_include_directories(server PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-
 target_link_libraries(controls BrickPi3)
-ament_target_dependencies(controls rclcpp robot_interfaces)
-ament_target_dependencies(processing rclcpp robot_interfaces)
+ament_target_dependencies(controls rclcpp)
+ament_target_dependencies(server rclcpp)
 
+ament_export_dependencies(rosidl_default_runtime)
+
+rosidl_target_interfaces(controls ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_target_interfaces(server ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 install(TARGETS 
   controls
-  processing
+  server
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
