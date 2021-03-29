@@ -27,18 +27,18 @@ void calculateMotorSpeeds(
     const std::shared_ptr<robot::srv::RobotControl::Request> request,
     std::shared_ptr<robot::srv::RobotControl::Response> response)
 {
-    const float kThreshold = 30.0;
+    const float kThreshold = 10.0;
     if (request->sensor1 < kThreshold || request->sensor2 < kThreshold)
     {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Turn left");
-        response->left_motor = -330;
-        response->right_motor = 330;
+        response->left_motor = -110;
+        response->right_motor = 110;
     }
     else if (request->sensor3 < kThreshold || request->sensor4 < kThreshold)
     {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Turn right");
-        response->left_motor = 330;
-        response->right_motor = -330;
+        response->left_motor = 110;
+        response->right_motor = -110;
     }
     else
     {
