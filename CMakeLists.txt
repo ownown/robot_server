@@ -31,7 +31,7 @@ target_include_directories(BrickPi3 PUBLIC
   $<INSTALL_INTERFACE:include>)
 
 # Build the RPI controller
-add_executable(controls src/controls_main.cpp)
+add_executable(controls src/controls.cpp)
 target_include_directories(controls PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
