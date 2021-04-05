@@ -37,21 +37,31 @@ void getSensorReadings(std::shared_ptr<BrickPi3> bp, Sensors *sensors);
 
 int main(int argc, char **argv)
 {
+    const auto kServerWait = 1s;
+    const auto kEventLoopDelay = 50ms;
+
     std::shared_ptr<BrickPi3> bp = std::make_shared<BrickPi3>();
     Sensors sensors;
+
     rclcpp::init(argc, argv);
 
     signal(SIGINT, exit_signal_handler);
     initialiseSensors(bp, &sensors);
     bp->reset_motor_encoder(PORT_A + PORT_B);
-    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("robot_controller");
-    rclcpp::Client<robot::srv::RobotControl>::SharedPtr client = node->create_client<robot::srv::RobotControl>("robot_control");
-    while (!client->wait_for_service(1s))
+
+    std::shared_ptr<rclcpp::Node> node =
+        rclcpp::Node::make_shared("robot_controller");
+
+    rclcpp::Client<robot::srv::RobotControl>::SharedPtr client =
+        node->create_client<robot::srv::RobotControl>("robot_control");
+
+    while (!client->wait_for_service(kServerWait))
     {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Waiting for the server...");
         if (!rclcpp::ok())
         {
-            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
+            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), 
+                "Interrupted while waiting for the service. Exiting.");
             return 0;
         }
     }
@@ -59,6 +69,7 @@ int main(int argc, char **argv)
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Server found...");
     while (rclcpp::ok())
     {
+        
         auto request = std::make_shared<robot::srv::RobotControl::Request>();
         getSensorReadings(bp, &sensors);
 
@@ -69,9 +80,12 @@ int main(int argc, char **argv)
 
         auto response = client->async_send_request(request);
 
-        if (rclcpp::spin_until_future_complete(node, response) == rclcpp::FutureReturnCode::SUCCESS)
+        if (rclcpp::spin_until_future_complete(node, response) ==
+            rclcpp::FutureReturnCode::SUCCESS)
         {
-            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Response recieved, setting motors to <%ddeg/s, %ddeg/s>", response.get()->left_motor, response.get()->right_motor);
+            RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "Response recieved, setting motors to <%ddeg/s, %ddeg/s>",
+                response.get()->left_motor, response.get()->right_motor);
             bp->set_motor_dps(PORT_B, response.get()->left_motor);
             bp->set_motor_dps(PORT_A, response.get()->right_motor);
         }
@@ -80,7 +94,7 @@ int main(int argc, char **argv)
             RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to call server");
         }
 
-        rclcpp::sleep_for(50ms);
+        rclcpp::sleep_for(kEventLoopDelay);
     }
 
     rclcpp::shutdown();
@@ -103,7 +117,10 @@ void exit_signal_handler(int signo)
 
 void initialiseSensors(std::shared_ptr<BrickPi3> bp, Sensors *sensors)
 {
+    const auto kSensorCheckDelay = 20ms;
+
     int error = bp->detect();
+
     if (error)
     {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Unable to detect BrickPi");
@@ -141,7 +158,7 @@ void initialiseSensors(std::shared_ptr<BrickPi3> bp, Sensors *sensors)
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Error: %d", error);
         if (error == 4) 
         {
-            rclcpp::sleep_for(20ms);
+            rclcpp::sleep_for(kSensorCheckDelay);
         }
     }
 }

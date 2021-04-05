@@ -21,6 +21,7 @@ find_package(rclcpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 set(srv_files "srv/RobotControl.srv")
+set(msg_files "msg/Sensors.msg" "msg/Motors.msg")
 
 rosidl_generate_interfaces(${PROJECT_NAME} ${msg_files} ${srv_files})
 
@@ -35,13 +36,8 @@ target_include_directories(controls PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-# Build the processor
-# add_executable(processing src/processing_main.cpp src/processing.cpp)
-# target_include_directories(processing PUBLIC
-#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#   $<INSTALL_INTERFACE:include>)
-
-add_executable(server src/server.cpp)
+# Build the server
+add_executable(server src/server.cpp src/processing.cpp)
 target_include_directories(server PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
