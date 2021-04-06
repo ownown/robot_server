@@ -36,8 +36,8 @@ void getSensorReadings(std::shared_ptr<BrickPi3> bp, Sensors *sensors);
 
 int main(int argc, char **argv)
 {
-    const auto kServerWait = 1s;
-    const auto kEventLoopDelay = 50ms;
+    const auto kServerWait      = 1s;
+    const auto kEventLoopDelay  = 50ms;
 
     std::shared_ptr<BrickPi3> bp = std::make_shared<BrickPi3>();
     Sensors sensors;
