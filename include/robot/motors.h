@@ -9,7 +9,7 @@ enum class MotorSide
 
 /**
  * @brief struct to store the motor speeds in in DPS
- * 
+ *
  */
 typedef struct
 {

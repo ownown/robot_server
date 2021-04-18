@@ -1,12 +1,12 @@
 /**
  * @file processing.h
  * @author Oliver Newman (oliver@olivernewman.co.uk)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2021-04-05
- * 
+ *
  * (c) Copyright 2021 Oliver Newman
- * 
+ *
  */
 #ifndef OWN_PROCESSING_H
 #define OWN_PROCESSING_H

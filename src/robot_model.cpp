@@ -111,7 +111,7 @@ double RobotModel::getSensorValue(const int kSensorId)
 }
 
 std::vector<double> RobotModel::getSensorValues()
-{   
+{
     std::vector<double> readings;
     for (Sensor sensor: this->sensors)
     {
@@ -130,7 +130,7 @@ void RobotModel::setSensorValue(const int kSensorId, const double kValue)
 }
 
 double RobotModel::getMotorSpeed(const MotorSide kMotorSide, const SpeedUnit kUnitType)
-{   
+{
     const double kDegressToRadiansConversionFactor = 0.017453;
 
     int motor_speed = this->motors.left;
@@ -165,7 +165,7 @@ Motors RobotModel::getMotorSpeeds(const SpeedUnit kUnitType)
 // Static
 // int RobotModel::convertMotorSpeedToDPS(const double speed, const SpeedUnit unit_type)
 // {
-    
+
 // }
 
 void RobotModel::thresholdSpeedCalculator()

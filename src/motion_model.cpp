@@ -19,8 +19,8 @@ void MotionModel::forwardKinematics(
 )
 {
     Pose old_pose = this->odometry_pose;
-    // The change in the motor values. As we have the robot resetting the 
-    // encoder positions on each read, we don't need to interact with our 
+    // The change in the motor values. As we have the robot resetting the
+    // encoder positions on each read, we don't need to interact with our
     // recorded positions.
     const double kDeltaLeft = kLeftEncoderValue * this->robot->getWheelRadius();
     const double kDeltaRight = kRightEncoderValue * this->robot->getWheelRadius();
@@ -35,7 +35,7 @@ void MotionModel::forwardKinematics(
     {
         // If the distance travelled in both wheels is the same, then the robot
         // either didn't move or moved straight forward. If it didn't move then
-        // that is covered already by initialising the new values to the old 
+        // that is covered already by initialising the new values to the old
         // ones.
         if (kDeltaLeft != 0.0)
         {
@@ -44,13 +44,13 @@ void MotionModel::forwardKinematics(
 
             /**
              * A little bit of trig
-             * 
+             *
              * x' = x + d*cos(\theta)
              * y' = y + d*sin(\theta)
-             * 
+             *
              * Simplified because we've already assigned the old values to the
              * new_ variables
-             * 
+             *
              */
             new_x += kDistance * std::cos(new_theta);
             new_y += kDistance * std::sin(new_theta);

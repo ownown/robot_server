@@ -1,12 +1,12 @@
 /**
  * @file controls_main.cpp
  * @author Oliver Newman (oliver@olivernewman.co.uk)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2021-03-29
- * 
+ *
  * (c) Copyright 2021 Oliver Newman
- * 
+ *
  */
 #include <chrono> // chrono literals
 #include <csignal> // exit signals
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Waiting for the server...");
         if (!rclcpp::ok())
         {
-            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), 
+            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),
                 "Interrupted while waiting for the service. Exiting.");
             return 0;
         }
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Server found...");
     while (rclcpp::ok())
     {
-        
+
         auto request = std::make_shared<robot::srv::RobotControl::Request>();
         getSensorReadings(bp, &sensors);
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
         request->sensor3 = sensors.s3.cm;
         request->sensor4 = sensors.s4.cm;
 
-        // By resetting the motor encoders, we don't need to subtract the 
+        // By resetting the motor encoders, we don't need to subtract the
         // previous value each time we use this in the motion model
         int32_t left_motor_encoder, right_motor_encoder;
         bp->reset_motor_encoder(LEFT_MOTOR, left_motor_encoder);
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
     }
 
     rclcpp::shutdown();
-    
+
     bp->reset_all();
     return 0;
 }
@@ -159,7 +159,7 @@ void initialiseSensors(std::shared_ptr<BrickPi3> bp, Sensors *sensors)
         if (bp->get_sensor(PORT_1, &(sensors->s1)))
         {
             error++;
-        } 
+        }
         if (bp->get_sensor(PORT_2, &(sensors->s2)))
         {
             error++;
@@ -173,7 +173,7 @@ void initialiseSensors(std::shared_ptr<BrickPi3> bp, Sensors *sensors)
             error++;
         }
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Error: %d", error);
-        if (error == 4) 
+        if (error == 4)
         {
             rclcpp::sleep_for(kSensorCheckDelay);
         }

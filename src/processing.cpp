@@ -43,13 +43,13 @@ Processing::Processing(const std::string kPropertiesFileName) :
         this->create_publisher<robot::msg::Sensors>(
             "robot/sensors", Constants::QueueSize);
 
-    this->pose_publisher = 
+    this->pose_publisher =
         this->create_publisher<robot::msg::Pose>(
             "robot/pose", Constants::QueueSize);
 }
 
 void Processing::model(const ReqPtr request, ResPtr response)
-{   
+{
     this->robot->setSensorValue(0, request->sensor1);
     this->robot->setSensorValue(1, request->sensor2);
     this->robot->setSensorValue(2, request->sensor3);

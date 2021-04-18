@@ -33,7 +33,7 @@ def print_chart(poses: List[Tuple[float, float, float]]) -> None:
 
     x,y,_ = list(map(list, zip(*poses)))
     plt.scatter(x,y, color='blue')
-    plt.show()    
+    plt.show()
 
 def save_to_csv(poses: List[Tuple[float, float, float]], filename: str) -> None:
     with open(filename, 'w') as f:
@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     angles: List[float] = sensor_angles(NUM_SENSORS, SENSOR_ANGLE_OFFSET)
     poses: List[Tuple[float, float, float]] = [sensor_pose(t_k, X_0, Y_0, SENSOR_X_OFFSET) for t_k in angles]
-    
+
     save_to_csv(poses, CSV_FILE)
     # print_table(poses)
     # print_chart(poses)

@@ -64,7 +64,7 @@ rosidl_target_interfaces(controls ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rosidl_target_interfaces(server ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rosidl_target_interfaces(visualization ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
-install(TARGETS 
+install(TARGETS
   controls
   server
   visualization

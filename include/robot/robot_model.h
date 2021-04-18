@@ -31,7 +31,7 @@ private:
     const double kAxleLength;   // Length of the wheel axle to/from the centre
                                 // of the wheels
 
-    const double kThreshold;    // Threshold reading at which point the robot 
+    const double kThreshold;    // Threshold reading at which point the robot
                                 // should take action to avoid an obstacle
 
     const int kNumberOfSensors; // The number of active sensors on the robot
@@ -83,7 +83,7 @@ public:
      */
     static std::shared_ptr<RobotModel> createRobotModel(const std::string kFileName);
     // RobotModel(const double robot_radius, const double wheel_radius, const double axle_length);
-    
+
     double getRadius();
     double getWheelRadius();
     double getAxleLength();
