@@ -69,9 +69,9 @@ std::string Pose::toString()
     #endif
 }
 
-robot::msg::Pose Pose::toMsg()
+robot_interfaces::msg::Pose Pose::toMsg()
 {
-    robot::msg::Pose pose = robot::msg::Pose();
+    robot_interfaces::msg::Pose pose = robot_interfaces::msg::Pose();
     pose.x = this->x;
     pose.y = this->y;
     pose.theta = this->theta;

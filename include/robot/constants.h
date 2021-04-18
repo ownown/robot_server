@@ -1,6 +1,8 @@
 #ifndef OWN_CONSTANTS_H
 #define OWN_CONSTANTS_H
 
+#define OWN_DEBUG
+
 namespace Constants
 {
     // Leaving the k prefixes off, as the namespace name kinda gives enough of a
