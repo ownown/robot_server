@@ -1,7 +1,7 @@
 #ifndef OWN_SENSOR_H
 #define OWN_SENSOR_H
 
-#include "robot/pose.h"
+#include "robot_server/pose.h"
 
 typedef struct
 {

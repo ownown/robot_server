@@ -1,8 +1,8 @@
 #include "rclcpp/rclcpp.hpp"
 
-#include "robot/constants.h"
-#include "robot/motion_model.h"
-#include "robot/processing.h"
+#include "robot_server/constants.h"
+#include "robot_server/motion_model.h"
+#include "robot_server/processing.h"
 
 #include "robot_interfaces/srv/robot_control.hpp"
 #include "robot_interfaces/msg/motor_speeds.hpp"
@@ -33,19 +33,19 @@ Processing::Processing(const std::string kPropertiesFileName) :
 
     this->robot_publisher =
         this->create_publisher<robot_interfaces::msg::Robot>(
-            "robot/robot", Constants::QueueSize);
+            "robot_server/robot", Constants::QueueSize);
 
     this->motor_publisher =
         this->create_publisher<robot_interfaces::msg::MotorSpeeds>(
-            "robot/motors", Constants::QueueSize);
+            "robot_server/motors", Constants::QueueSize);
 
     this->sensor_publisher =
         this->create_publisher<robot_interfaces::msg::Sensors>(
-            "robot/sensors", Constants::QueueSize);
+            "robot_server/sensors", Constants::QueueSize);
 
     this->pose_publisher =
         this->create_publisher<robot_interfaces::msg::Pose>(
-            "robot/pose", Constants::QueueSize);
+            "robot_server/pose", Constants::QueueSize);
 }
 
 void Processing::model(const ReqPtr request, ResPtr response)

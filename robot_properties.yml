@@ -8,7 +8,7 @@ general:
 sensors:
   number: 4
   # filepath relative to workspace root
-  poses: src/robot/misc/sensor_poses.csv
+  poses: src/robot_server/misc/sensor_poses.csv
 
 motors:
   number: 2

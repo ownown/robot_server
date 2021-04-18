@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "robot/robot_model.h"
-#include "robot/pose.h"
-#include "robot/odometry_components.h"
-#include "robot/rotary_encoders.h"
+#include "robot_server/robot_model.h"
+#include "robot_server/pose.h"
+#include "robot_server/odometry_components.h"
+#include "robot_server/rotary_encoders.h"
 
 class MotionModel
 {

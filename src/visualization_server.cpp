@@ -1,7 +1,7 @@
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
-#include "robot/visualization.h"
+#include "robot_server/visualization.h"
 
 int main(int argc, char **argv)
 {

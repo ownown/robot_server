@@ -1,4 +1,4 @@
-#include "robot/visualization.h"
+#include "robot_server/visualization.h"
 
 #include <chrono>
 
@@ -11,7 +11,7 @@
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.h" // tf2::toMsg()
 
-#include "robot/constants.h"
+#include "robot_server/constants.h"
 
 using namespace std::chrono_literals;
 
@@ -87,7 +87,7 @@ Visualization::Visualization() : Node("visualization"), robot_clock(RCL_SYSTEM_T
         this->create_publisher<MsgPose>("viz/robot_pose", Constants::QueueSize);
     this->robot_subscription =
         this->create_subscription<robot_interfaces::msg::Robot>(
-            "robot/robot", Constants::QueueSize,
+            "robot_server/robot", Constants::QueueSize,
             [this](const robot_interfaces::msg::Robot::SharedPtr msg) {
                 this->robotCallback(msg); });
 }

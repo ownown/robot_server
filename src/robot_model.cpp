@@ -1,6 +1,6 @@
-#include "robot/robot_model.h"
+#include "robot_server/robot_model.h"
 
-#include "robot/constants.h"
+#include "robot_server/constants.h"
 
 #ifdef OWN_DEBUG
 #include <unistd.h>
@@ -17,10 +17,10 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "robot/motors.h"
-#include "robot/pose.h"
-#include "robot/sensor.h"
-#include "robot/speed_units.h"
+#include "robot_server/motors.h"
+#include "robot_server/pose.h"
+#include "robot_server/sensor.h"
+#include "robot_server/speed_units.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Private functions

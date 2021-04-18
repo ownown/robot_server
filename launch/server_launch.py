@@ -10,7 +10,7 @@ from ament_index_python.packages import get_package_share_directory
 # https://github.com/olmerg/lesson_urdf/blob/master/launch/view_robot_launch.py
 
 def generate_launch_description():
-    robot_dir = get_package_share_directory('robot')
+    robot_dir = get_package_share_directory('robot_server')
     ld = LaunchDescription()
 
     rviz_config_file = LaunchConfiguration('rviz_config_file')
@@ -21,13 +21,13 @@ def generate_launch_description():
     )
 
     server_node = Node(
-        package='robot',
+        package='robot_server',
         executable='server',
         name='server'
     )
 
     viz_node = Node(
-        package='robot',
+        package='robot_server',
         executable='visualization',
         name='viz'
     )

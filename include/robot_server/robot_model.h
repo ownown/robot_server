@@ -18,10 +18,10 @@
 
 #include "yaml-cpp/yaml.h"
 
-#include "robot/pose.h"
-#include "robot/speed_units.h"
-#include "robot/motors.h"
-#include "robot/sensor.h"
+#include "robot_server/pose.h"
+#include "robot_server/speed_units.h"
+#include "robot_server/motors.h"
+#include "robot_server/sensor.h"
 
 class RobotModel
 {

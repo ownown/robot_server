@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>robot</name>
+  <name>robot_server</name>
   <version>0.0.0</version>
   <description>This is the ROS2 node to run on the Raspberry Pi to control the BrickPi and feedback to the main processing node</description>
   <maintainer email="oliver@olivernewman.co.uk">Oliver Newman</maintainer>

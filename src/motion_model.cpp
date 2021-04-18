@@ -1,10 +1,10 @@
-#include "robot/motion_model.h"
+#include "robot_server/motion_model.h"
 
 #include <cmath>
 #include <memory>
 
-#include "robot/robot_model.h"
-#include "robot/pose.h"
+#include "robot_server/robot_model.h"
+#include "robot_server/pose.h"
 
 MotionModel::MotionModel(std::shared_ptr<RobotModel> robot) :
     robot(robot), odometry_pose({0.0, 0.0, 0.0}), rotary_encoder_values({0.0,0.0}),

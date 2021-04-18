@@ -22,9 +22,9 @@
 #include "robot_interfaces/msg/sensors.hpp"
 #include "robot_interfaces/msg/robot.hpp"
 
-#include "robot/robot_model.h"
-#include "robot/motion_model.h"
-#include "robot/motors.h"
+#include "robot_server/robot_model.h"
+#include "robot_server/motion_model.h"
+#include "robot_server/motors.h"
 
 using ReqPtr = std::shared_ptr<robot_interfaces::srv::RobotControl::Request>;
 using ResPtr = std::shared_ptr<robot_interfaces::srv::RobotControl::Response>;
