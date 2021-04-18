@@ -16,18 +16,18 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "robot/srv/robot_control.hpp"
+#include "robot_interfaces/srv/robot_control.hpp"
 
-#include "robot/msg/motor_speeds.hpp"
-#include "robot/msg/sensors.hpp"
-#include "robot/msg/robot.hpp"
+#include "robot_interfaces/msg/motor_speeds.hpp"
+#include "robot_interfaces/msg/sensors.hpp"
+#include "robot_interfaces/msg/robot.hpp"
 
 #include "robot/robot_model.h"
 #include "robot/motion_model.h"
 #include "robot/motors.h"
 
-using ReqPtr = std::shared_ptr<robot::srv::RobotControl::Request>;
-using ResPtr = std::shared_ptr<robot::srv::RobotControl::Response>;
+using ReqPtr = std::shared_ptr<robot_interfaces::srv::RobotControl::Request>;
+using ResPtr = std::shared_ptr<robot_interfaces::srv::RobotControl::Response>;
 
 class Processing : public rclcpp::Node
 {
@@ -39,11 +39,11 @@ private:
     // const int kTurningSpeed = 110;
     const float kThreshold  = 10.0;
 
-    rclcpp::Service<robot::srv::RobotControl>::SharedPtr control_service;
-    rclcpp::Publisher<robot::msg::Robot>::SharedPtr robot_publisher;
-    rclcpp::Publisher<robot::msg::MotorSpeeds>::SharedPtr motor_publisher;
-    rclcpp::Publisher<robot::msg::Sensors>::SharedPtr sensor_publisher;
-    rclcpp::Publisher<robot::msg::Pose>::SharedPtr pose_publisher;
+    rclcpp::Service<robot_interfaces::srv::RobotControl>::SharedPtr control_service;
+    rclcpp::Publisher<robot_interfaces::msg::Robot>::SharedPtr robot_publisher;
+    rclcpp::Publisher<robot_interfaces::msg::MotorSpeeds>::SharedPtr motor_publisher;
+    rclcpp::Publisher<robot_interfaces::msg::Sensors>::SharedPtr sensor_publisher;
+    rclcpp::Publisher<robot_interfaces::msg::Pose>::SharedPtr pose_publisher;
 
     void model(const ReqPtr request, ResPtr response);
 public:

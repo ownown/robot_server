@@ -4,7 +4,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rcl/time.h"
-#include "geometry_msgs/msg/pose.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
 #include "visualization_msgs/msg/marker.hpp"
 
 
@@ -15,8 +15,8 @@
 
 using namespace std::chrono_literals;
 
-using Marker = visualization_msgs::msg::Marker;
-using MsgPose = geometry_msgs::msg::Pose;
+// using Marker = visualization_msgs::msg::Marker;
+using MsgPose = geometry_msgs::msg::PoseStamped;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Private functions
@@ -26,7 +26,7 @@ Marker Visualization::initialiseCylinderMarker()
     const uint32_t shape = Marker::CYLINDER;
     Marker marker;
     marker.header.frame_id = "/my_frame";
-    marker.header.stamp = this->clock.now();
+    marker.header.stamp = this->robot_clock.now();
     marker.ns = "test_shape";
     marker.id = 0;
 
@@ -56,21 +56,24 @@ Marker Visualization::initialiseCylinderMarker()
     return marker;
 }
 
-void Visualization::robotCallback(const robot::msg::Robot::SharedPtr msg) const
+void Visualization::robotCallback(const robot_interfaces::msg::Robot::SharedPtr msg)
 {
     // geometry_msgs::msg::Pose consists of
     // Point pose (x,y,z) and
     // Rotation rotation (x,y,z,w)
     MsgPose pose;
 
-    pose.position.x = msg->pose.x;
-    pose.position.y = msg->pose.y;
-    pose.position.z = 0.0;
+    pose.header.frame_id = "/robot";
+    pose.header.stamp = this->robot_clock.now();
+
+    pose.pose.position.x = msg->pose.x;
+    pose.pose.position.y = msg->pose.y;
+    pose.pose.position.z = 0.0;
 
     // Create quaternion from Roll Pitch Yaw, where Yaw == Theta
     tf2::Quaternion quat;
     quat.setRPY(0, 0, msg->pose.theta);
-    pose.orientation = tf2::toMsg(quat);
+    pose.pose.orientation = tf2::toMsg(quat);
 
     this->pose_publisher->publish(pose);
 }
@@ -78,16 +81,14 @@ void Visualization::robotCallback(const robot::msg::Robot::SharedPtr msg) const
 ////////////////////////////////////////////////////////////////////////////////
 // Constructor
 
-Visualization::Visualization() : Node("visualization"), clock(RCL_SYSTEM_TIME)
+Visualization::Visualization() : Node("visualization"), robot_clock(RCL_SYSTEM_TIME)
 {
-    this->marker_publisher =
-        this->create_publisher<Marker>("viz/marker", Constants::QueueSize);
     this->pose_publisher =
         this->create_publisher<MsgPose>("viz/robot_pose", Constants::QueueSize);
     this->robot_subscription =
-        this->create_subscription<robot::msg::Robot>(
+        this->create_subscription<robot_interfaces::msg::Robot>(
             "robot/robot", Constants::QueueSize,
-            [this](const robot::msg::Robot::SharedPtr msg) {
+            [this](const robot_interfaces::msg::Robot::SharedPtr msg) {
                 this->robotCallback(msg); });
 }
 

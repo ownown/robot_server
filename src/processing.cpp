@@ -4,18 +4,18 @@
 #include "robot/motion_model.h"
 #include "robot/processing.h"
 
-#include "robot/srv/robot_control.hpp"
-#include "robot/msg/motor_speeds.hpp"
-#include "robot/msg/sensors.hpp"
-#include "robot/msg/robot.hpp"
+#include "robot_interfaces/srv/robot_control.hpp"
+#include "robot_interfaces/msg/motor_speeds.hpp"
+#include "robot_interfaces/msg/sensors.hpp"
+#include "robot_interfaces/msg/robot.hpp"
 
 #include <string>
 
 // using std::placeholders::_1;
 // using std::placeholders::_2;
 
-using ReqPtr = std::shared_ptr<robot::srv::RobotControl::Request>;
-using ResPtr = std::shared_ptr<robot::srv::RobotControl::Response>;
+using ReqPtr = std::shared_ptr<robot_interfaces::srv::RobotControl::Request>;
+using ResPtr = std::shared_ptr<robot_interfaces::srv::RobotControl::Response>;
 
 Processing::Processing(const std::string kPropertiesFileName) :
     Node("processing_node")
@@ -27,24 +27,24 @@ Processing::Processing(const std::string kPropertiesFileName) :
     // https://answers.ros.org/question/299126
     // https://stackoverflow.com/a/17545183
     this->control_service =
-        this->create_service<robot::srv::RobotControl>("robot_control",
+        this->create_service<robot_interfaces::srv::RobotControl>("robot_control",
             [this](const ReqPtr req, ResPtr res) { this->model(req, res); });
             // std::bind(&Processing::calculateMotorSpeeds, this, _1, _2));
 
     this->robot_publisher =
-        this->create_publisher<robot::msg::Robot>(
+        this->create_publisher<robot_interfaces::msg::Robot>(
             "robot/robot", Constants::QueueSize);
 
     this->motor_publisher =
-        this->create_publisher<robot::msg::MotorSpeeds>(
+        this->create_publisher<robot_interfaces::msg::MotorSpeeds>(
             "robot/motors", Constants::QueueSize);
 
     this->sensor_publisher =
-        this->create_publisher<robot::msg::Sensors>(
+        this->create_publisher<robot_interfaces::msg::Sensors>(
             "robot/sensors", Constants::QueueSize);
 
     this->pose_publisher =
-        this->create_publisher<robot::msg::Pose>(
+        this->create_publisher<robot_interfaces::msg::Pose>(
             "robot/pose", Constants::QueueSize);
 }
 
@@ -64,7 +64,7 @@ void Processing::model(const ReqPtr request, ResPtr response)
     this->motion_model->forwardKinematics(
         request->left_motor_encoder, request->right_motor_encoder);
 
-    auto robot_message = robot::msg::Robot();
+    auto robot_message = robot_interfaces::msg::Robot();
     robot_message.pose = this->motion_model->getOdometryPose().toMsg();
 
     robot_message.sensors.sensor1 = request->sensor1;

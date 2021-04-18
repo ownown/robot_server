@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include "robot/msg/pose.hpp"
+#include "robot_interfaces/msg/pose.hpp"
 
 /**
  * @brief Stores the pose (x,y,theta) of the robot
@@ -82,7 +82,7 @@ public:
      */
     std::string toString();
 
-    robot::msg::Pose toMsg();
+    robot_interfaces::msg::Pose toMsg();
 };
 
 #endif // OWN_POSE_H

@@ -13,26 +13,25 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "geometry_msgs/msg/pose.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
 #include "visualization_msgs/msg/marker.hpp"
 
-#include "robot/msg/robot.hpp"
+#include "robot_interfaces/msg/robot.hpp"
 
 using Marker = visualization_msgs::msg::Marker;
-using MsgPose = geometry_msgs::msg::Pose;
+using MsgPose = geometry_msgs::msg::PoseStamped;
 
 
 class Visualization : public rclcpp::Node
 {
 private:
-    rclcpp::Publisher<Marker>::SharedPtr marker_publisher;
     rclcpp::Publisher<MsgPose>::SharedPtr pose_publisher;
-    rclcpp::Subscription<robot::msg::Robot>::SharedPtr robot_subscription;
-    rclcpp::Clock clock;
+    rclcpp::Subscription<robot_interfaces::msg::Robot>::SharedPtr robot_subscription;
+    rclcpp::Clock robot_clock;
     Marker robot_marker;
 
     Marker initialiseCylinderMarker();
-    void robotCallback(const robot::msg::Robot::SharedPtr msg) const;
+    void robotCallback(const robot_interfaces::msg::Robot::SharedPtr msg);
 public:
     Visualization();
     void moveRobotMarker();

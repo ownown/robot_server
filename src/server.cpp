@@ -7,10 +7,11 @@
 
 int main(int argc, char **argv)
 {
-    const std::string kPropertiesFileName = "robot_properties.yml";
+    // If relative, from workspace root
+    const std::string kPropertiesFileName = "./src/robot/robot_properties.yml";
 
     rclcpp::init(argc, argv);
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Server ready");
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Server starting");
     rclcpp::spin(std::make_shared<Processing>(kPropertiesFileName));
     rclcpp::shutdown();
 

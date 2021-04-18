@@ -1,5 +1,12 @@
 #include "robot/robot_model.h"
 
+#include "robot/constants.h"
+
+#ifdef OWN_DEBUG
+#include <unistd.h>
+#include <limits.h>
+#endif // OWN_DEBUG
+
 #include <cmath>
 #include <fstream>
 #include <memory>
@@ -55,6 +62,17 @@ RobotModel::RobotModel(const YAML::Node props) :
     // Should this inherit from rclcpp::Node and have these declared as
     // parameters rather than constants?
 
+    #ifdef OWN_DEBUG
+    RCLCPP_INFO(rclcpp::get_logger("processing::robot_model::constructor"), "Robot Radius: %:.2f", this->kRobotRadius);
+    RCLCPP_INFO(rclcpp::get_logger("processing::robot_model::constructor"), "Wheel Radius: %:.2f", this->kWheelRadius);
+    RCLCPP_INFO(rclcpp::get_logger("processing::robot_model::constructor"), "Axle Length: %:.2f", this->kAxleLength);
+    RCLCPP_INFO(rclcpp::get_logger("processing::robot_model::constructor"), "Threshold: %:.2f", this->kThreshold);
+    RCLCPP_INFO(rclcpp::get_logger("processing::robot_model::constructor"), "Number of sensors: %d", this->kNumberOfSensors);
+    RCLCPP_INFO(rclcpp::get_logger("processing::robot_model::constructor"), "Deg/s straight: %d", this->kSpeedStraight);
+    RCLCPP_INFO(rclcpp::get_logger("processing::robot_model::constructor"), "Deg/s turning: %d", this->kSpeedTurning);
+    RCLCPP_INFO(rclcpp::get_logger("processing::robot_model::constructor"), "Sensor pose file: %s", props["sensors"]["poses"].as<std::string>().c_str());
+    #endif // OWN_DEBUG
+
     this->sensors = this->initialiseSensors(props["sensors"]["poses"].as<std::string>());
     this->motors = {0, 0};
 }
@@ -65,6 +83,13 @@ RobotModel::RobotModel(const YAML::Node props) :
 // Static
 std::shared_ptr<RobotModel> RobotModel::createRobotModel(const std::string kFileName)
 {
+    #ifdef OWN_DEBUG
+    char cwd[PATH_MAX+1];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        RCLCPP_INFO(rclcpp::get_logger("processing::robot_model"), "CWD: %s", cwd);
+    }
+    #endif // OWN_DEBUG
+
     const YAML::Node robot_props = YAML::LoadFile(kFileName);
     /// @TODO: Validate YAML
     return std::make_shared<RobotModel>(robot_props);

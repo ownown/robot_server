@@ -17,7 +17,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rcl/time.h"
 
-#include "robot/srv/robot_control.hpp"
+#include "robot_interfaces/srv/robot_control.hpp"
 
 #include "BrickPi3/BrickPi3.h"
 
@@ -58,8 +58,8 @@ int main(int argc, char **argv)
     std::shared_ptr<rclcpp::Node> node =
         rclcpp::Node::make_shared("robot_controller");
 
-    rclcpp::Client<robot::srv::RobotControl>::SharedPtr client =
-        node->create_client<robot::srv::RobotControl>("robot_control");
+    rclcpp::Client<robot_interfaces::srv::RobotControl>::SharedPtr client =
+        node->create_client<robot_interfaces::srv::RobotControl>("robot_control");
 
     while (!client->wait_for_service(kServerWait))
     {
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
     while (rclcpp::ok())
     {
 
-        auto request = std::make_shared<robot::srv::RobotControl::Request>();
+        auto request = std::make_shared<robot_interfaces::srv::RobotControl::Request>();
         getSensorReadings(bp, &sensors);
 
         request->ts = clock.now();
