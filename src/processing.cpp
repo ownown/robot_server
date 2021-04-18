@@ -1,11 +1,13 @@
 #include "rclcpp/rclcpp.hpp"
 
+#include "robot/constants.h"
 #include "robot/motion_model.h"
 #include "robot/processing.h"
 
 #include "robot/srv/robot_control.hpp"
 #include "robot/msg/motor_speeds.hpp"
 #include "robot/msg/sensors.hpp"
+#include "robot/msg/robot.hpp"
 
 #include <string>
 
@@ -15,7 +17,8 @@
 using ReqPtr = std::shared_ptr<robot::srv::RobotControl::Request>;
 using ResPtr = std::shared_ptr<robot::srv::RobotControl::Response>;
 
-Processing::Processing(const std::string kPropertiesFileName) : Node("processing_node")
+Processing::Processing(const std::string kPropertiesFileName) :
+    Node("processing_node")
 {
     this->robot = RobotModel::createRobotModel(kPropertiesFileName);
     this->motion_model = std::make_shared<MotionModel>(this->robot);
@@ -28,14 +31,21 @@ Processing::Processing(const std::string kPropertiesFileName) : Node("processing
             [this](const ReqPtr req, ResPtr res) { this->model(req, res); });
             // std::bind(&Processing::calculateMotorSpeeds, this, _1, _2));
 
+    this->robot_publisher =
+        this->create_publisher<robot::msg::Robot>(
+            "robot/robot", Constants::QueueSize);
+
     this->motor_publisher =
-        this->create_publisher<robot::msg::MotorSpeeds>("robot/motors", 10);
+        this->create_publisher<robot::msg::MotorSpeeds>(
+            "robot/motors", Constants::QueueSize);
 
     this->sensor_publisher =
-        this->create_publisher<robot::msg::Sensors>("robot/sensors", 10);
+        this->create_publisher<robot::msg::Sensors>(
+            "robot/sensors", Constants::QueueSize);
 
     this->pose_publisher = 
-        this->create_publisher<robot::msg::Pose>("robot/pose", 10);
+        this->create_publisher<robot::msg::Pose>(
+            "robot/pose", Constants::QueueSize);
 }
 
 void Processing::model(const ReqPtr request, ResPtr response)
@@ -51,23 +61,23 @@ void Processing::model(const ReqPtr request, ResPtr response)
     response->left_motor_speed = speeds.left;
     response->right_motor_speed = speeds.right;
 
-    this->motion_model->forwardKinematics(request->left_motor_encoder, request->right_motor_encoder);
-    auto pose_message = this->motion_model->getOdometryPose().toMsg();
+    this->motion_model->forwardKinematics(
+        request->left_motor_encoder, request->right_motor_encoder);
 
-    auto sensor_message = robot::msg::Sensors();
+    auto robot_message = robot::msg::Robot();
+    robot_message.pose = this->motion_model->getOdometryPose().toMsg();
 
-    sensor_message.sensor1 = request->sensor1;
-    sensor_message.sensor2 = request->sensor2;
-    sensor_message.sensor3 = request->sensor3;
-    sensor_message.sensor4 = request->sensor4;
+    robot_message.sensors.sensor1 = request->sensor1;
+    robot_message.sensors.sensor2 = request->sensor2;
+    robot_message.sensors.sensor3 = request->sensor3;
+    robot_message.sensors.sensor4 = request->sensor4;
 
-    auto motor_message  = robot::msg::MotorSpeeds();
+    robot_message.speeds.left = speeds.left;
+    robot_message.speeds.right = speeds.right;
 
-    motor_message.left = response->left_motor_speed;
-    motor_message.right = response->right_motor_speed;
+    robot_message.encoders.left = request->left_motor_encoder;
+    robot_message.encoders.right = request->right_motor_encoder;
 
-    this->sensor_publisher->publish(sensor_message);
-    this->motor_publisher->publish(motor_message);
-    this->pose_publisher->publish(pose_message);
+    this->robot_publisher->publish(robot_message);
 }
 

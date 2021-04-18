@@ -4,12 +4,14 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rcl/time.h"
-#include "visualization_msgs/msg/marker.hpp"
 #include "geometry_msgs/msg/pose.hpp"
+#include "visualization_msgs/msg/marker.hpp"
+
 
 #include "tf2/LinearMath/Quaternion.h"
-#include "tf2_geometry_msgs/tf2_geometry_msgs.h" // Not sure this is needed
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h" // tf2::toMsg()
 
+#include "robot/constants.h"
 
 using namespace std::chrono_literals;
 
@@ -69,6 +71,8 @@ void Visualization::robotCallback(const robot::msg::Robot::SharedPtr msg) const
     tf2::Quaternion quat;
     quat.setRPY(0, 0, msg->pose.theta);
     pose.orientation = tf2::toMsg(quat);
+
+    this->pose_publisher->publish(pose);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +80,15 @@ void Visualization::robotCallback(const robot::msg::Robot::SharedPtr msg) const
 
 Visualization::Visualization() : Node("visualization"), clock(RCL_SYSTEM_TIME)
 {
-
+    this->marker_publisher =
+        this->create_publisher<Marker>("viz/marker", Constants::QueueSize);
+    this->pose_publisher =
+        this->create_publisher<MsgPose>("viz/robot_pose", Constants::QueueSize);
+    this->robot_subscription =
+        this->create_subscription<robot::msg::Robot>(
+            "robot/robot", Constants::QueueSize,
+            [this](const robot::msg::Robot::SharedPtr msg) {
+                this->robotCallback(msg); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////

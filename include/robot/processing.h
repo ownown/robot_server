@@ -20,6 +20,7 @@
 
 #include "robot/msg/motor_speeds.hpp"
 #include "robot/msg/sensors.hpp"
+#include "robot/msg/robot.hpp"
 
 #include "robot/robot_model.h"
 #include "robot/motion_model.h"
@@ -39,6 +40,7 @@ private:
     const float kThreshold  = 10.0;
 
     rclcpp::Service<robot::srv::RobotControl>::SharedPtr control_service;
+    rclcpp::Publisher<robot::msg::Robot>::SharedPtr robot_publisher;
     rclcpp::Publisher<robot::msg::MotorSpeeds>::SharedPtr motor_publisher;
     rclcpp::Publisher<robot::msg::Sensors>::SharedPtr sensor_publisher;
     rclcpp::Publisher<robot::msg::Pose>::SharedPtr pose_publisher;

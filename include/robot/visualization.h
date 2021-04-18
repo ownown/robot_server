@@ -12,20 +12,25 @@
 #define OWN_VISUALIZATION_H
 
 #include "rclcpp/rclcpp.hpp"
+
+#include "geometry_msgs/msg/pose.hpp"
 #include "visualization_msgs/msg/marker.hpp"
 
 #include "robot/msg/robot.hpp"
 
 using Marker = visualization_msgs::msg::Marker;
+using MsgPose = geometry_msgs::msg::Pose;
 
 
 class Visualization : public rclcpp::Node
 {
 private:
     rclcpp::Publisher<Marker>::SharedPtr marker_publisher;
+    rclcpp::Publisher<MsgPose>::SharedPtr pose_publisher;
     rclcpp::Subscription<robot::msg::Robot>::SharedPtr robot_subscription;
     rclcpp::Clock clock;
     Marker robot_marker;
+
     Marker initialiseCylinderMarker();
     void robotCallback(const robot::msg::Robot::SharedPtr msg) const;
 public:
