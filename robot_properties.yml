@@ -1,0 +1,53 @@
+general:
+  robot_radius: 0.0
+  wheel_radius: 0.0
+  axle_length: 0.0
+  threshold: 10.0
+# Table for the sensor type
+# Value | BrickPi Sensor Type Enum
+# 1     | SENSOR_TYPE_NONE
+# 2     | SENSOR_TYPE_I2C
+# 3     | SENSOR_TYPE_CUSTOM
+# 4     | SENSOR_TYPE_TOUCH
+# 5     | SENSOR_TYPE_TOUCH_NXT
+# 6     | SENSOR_TYPE_TOUCH_EV3
+# 7     | SENSOR_TYPE_NXT_LIGHT_ON
+# 8     | SENSOR_TYPE_NXT_LIGHT_OFF
+# 9     | SENSOR_TYPE_NXT_COLOR_RED
+# 10    | SENSOR_TYPE_NXT_COLOR_GREEN
+# 11    | SENSOR_TYPE_NXT_COLOR_BLUE
+# 12    | SENSOR_TYPE_NXT_COLOR_FULL
+# 13    | SENSOR_TYPE_NXT_COLOR_OFF
+# 14    | SENSOR_TYPE_NXT_ULTRASONIC
+# 15    | SENSOR_TYPE_EV3_GYRO_ABS
+# 16    | SENSOR_TYPE_EV3_GYRO_DPS
+# 17    | SENSOR_TYPE_EV3_GYRO_ABS_DPS
+# 18    | SENSOR_TYPE_EV3_COLOR_REFLECTED
+# 19    | SENSOR_TYPE_EV3_COLOR_AMBIENT
+# 20    | SENSOR_TYPE_EV3_COLOR_COLOR
+# 21    | SENSOR_TYPE_EV3_COLOR_RAW_REFLECTED
+# 22    | SENSOR_TYPE_EV3_COLOR_COLOR_COMPONENTS
+# 23    | SENSOR_TYPE_EV3_ULTRASONIC_CM
+# 24    | SENSOR_TYPE_EV3_ULTRASONIC_INCHES
+# 25    | SENSOR_TYPE_EV3_ULTRASONIC_LISTEN
+# 26    | SENSOR_TYPE_EV3_INFRARED_PROXIMITY
+# 27    | SENSOR_TYPE_EV3_INFRARED_SEEK
+# 28    | SENSOR_TYPE_EV3_INFRARED_REMOTE
+sensors:
+  number: 4
+  # type: 23 # Look these up and comment
+  # ports:
+  #   - 1
+  #   - 2
+  #   - 3
+  #   - 4
+  poses: misc/sensor_poses.csv # Need to check relative paths with CMake
+
+motors:
+  number: 2
+  speed:
+    straight: 330
+    turning: 110
+  # ports:
+  #   - A
+  #   - B

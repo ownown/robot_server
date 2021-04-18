@@ -15,10 +15,14 @@
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rcl/time.h"
 
 #include "robot/srv/robot_control.hpp"
 
 #include "BrickPi3/BrickPi3.h"
+
+#define LEFT_MOTOR PORT_B
+#define RIGHT_MOTOR PORT_A
 
 using namespace std::chrono_literals;
 
@@ -36,17 +40,20 @@ void getSensorReadings(std::shared_ptr<BrickPi3> bp, Sensors *sensors);
 
 int main(int argc, char **argv)
 {
+
     const auto kServerWait      = 1s;
     const auto kEventLoopDelay  = 50ms;
 
     std::shared_ptr<BrickPi3> bp = std::make_shared<BrickPi3>();
     Sensors sensors;
 
+    rclcpp::Clock clock(RCL_SYSTEM_TIME);
+
     rclcpp::init(argc, argv);
 
     signal(SIGINT, exit_signal_handler);
     initialiseSensors(bp, &sensors);
-    bp->reset_motor_encoder(PORT_A + PORT_B);
+    bp->reset_motor_encoder(LEFT_MOTOR + RIGHT_MOTOR);
 
     std::shared_ptr<rclcpp::Node> node =
         rclcpp::Node::make_shared("robot_controller");
@@ -72,10 +79,21 @@ int main(int argc, char **argv)
         auto request = std::make_shared<robot::srv::RobotControl::Request>();
         getSensorReadings(bp, &sensors);
 
+        request->ts = clock.now();
+
         request->sensor1 = sensors.s1.cm;
         request->sensor2 = sensors.s2.cm;
         request->sensor3 = sensors.s3.cm;
         request->sensor4 = sensors.s4.cm;
+
+        // By resetting the motor encoders, we don't need to subtract the 
+        // previous value each time we use this in the motion model
+        int32_t left_motor_encoder, right_motor_encoder;
+        bp->reset_motor_encoder(LEFT_MOTOR, left_motor_encoder);
+        bp->reset_motor_encoder(RIGHT_MOTOR, right_motor_encoder);
+
+        request->left_motor_encoder = left_motor_encoder;
+        request->right_motor_encoder = right_motor_encoder;
 
         auto response = client->async_send_request(request);
 
@@ -84,9 +102,9 @@ int main(int argc, char **argv)
         {
             RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
                 "Response recieved, setting motors to <%ddeg/s, %ddeg/s>",
-                response.get()->left_motor, response.get()->right_motor);
-            bp->set_motor_dps(PORT_B, response.get()->left_motor);
-            bp->set_motor_dps(PORT_A, response.get()->right_motor);
+                response.get()->left_motor_speed, response.get()->right_motor_speed);
+            bp->set_motor_dps(LEFT_MOTOR, response.get()->left_motor_speed);
+            bp->set_motor_dps(RIGHT_MOTOR, response.get()->right_motor_speed);
         }
         else
         {
